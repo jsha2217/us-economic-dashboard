@@ -45,7 +45,7 @@ function AIAnalysisPanel() {
                                 🤖 AI 경제 분석
                             </h2>
                             <p className="text-purple-100 text-sm mt-1">
-                                Google Gemini 1.5 Pro
+                                Google Gemini 2.5 Flash
                             </p>
                         </div>
                     </div>
@@ -117,57 +117,34 @@ function AIAnalysisPanel() {
                         </div>
                     )}
 
-                    {/* 분석 결과 */}
+                    {/* 분석 결과 - 2개 섹션만 */}
                     {!loading && !error && analysis && (
-                        <div className="space-y-6">
+                        <div className="space-y-5">
                             {/* 전체 요약 */}
-                            <div className="bg-white rounded-lg p-5 shadow-sm border border-purple-100">
+                            <div className="bg-white rounded-lg p-6 shadow-sm border border-purple-100">
                                 <h3 className="text-lg font-bold text-gray-800 mb-3 flex items-center gap-2">
                                     📊 전체 요약
                                 </h3>
-                                <p className="text-gray-700 leading-relaxed">
+                                <p className="text-gray-700 leading-relaxed text-base">
                                     {analysis.analysis.summary}
                                 </p>
                             </div>
 
-                            {/* 주요 포인트 */}
-                            {analysis.analysis.key_points && analysis.analysis.key_points.length > 0 && (
-                                <div className="bg-white rounded-lg p-5 shadow-sm border border-purple-100">
-                                    <h3 className="text-lg font-bold text-gray-800 mb-3 flex items-center gap-2">
-                                        🎯 주요 포인트
-                                    </h3>
-                                    <ul className="space-y-3">
-                                        {analysis.analysis.key_points.map((point, index) => (
-                                            <li key={index} className="flex items-start gap-3">
-                        <span className="flex-shrink-0 w-6 h-6 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center text-sm font-bold">
-                          {index + 1}
-                        </span>
-                                                <span className="text-gray-700 leading-relaxed flex-1">
-                          {point}
-                        </span>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-                            )}
-
-                            {/* 향후 전망 */}
-                            {analysis.analysis.outlook && (
-                                <div className="bg-white rounded-lg p-5 shadow-sm border border-purple-100">
-                                    <h3 className="text-lg font-bold text-gray-800 mb-3 flex items-center gap-2">
-                                        🔮 향후 전망
-                                    </h3>
-                                    <p className="text-gray-700 leading-relaxed">
-                                        {analysis.analysis.outlook}
-                                    </p>
-                                </div>
-                            )}
+                            {/* 미국 증시 투자 전망 */}
+                            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-6 shadow-sm border-2 border-blue-200">
+                                <h3 className="text-lg font-bold text-blue-900 mb-3 flex items-center gap-2">
+                                    📈 미국 증시 투자 전망
+                                </h3>
+                                <p className="text-blue-900 leading-relaxed text-base font-medium">
+                                    {analysis.analysis.outlook}
+                                </p>
+                            </div>
 
                             {/* 모델 정보 */}
                             <div className="flex items-center justify-between text-sm text-gray-500 pt-4 border-t border-purple-100">
                                 <div className="flex items-center gap-2">
                                     <Sparkles className="w-4 h-4" />
-                                    <span>분석 모델: Google Gemini Pro</span>
+                                    <span>분석 모델: Google Gemini 2.5 Flash</span>
                                 </div>
                                 <button
                                     onClick={generateAnalysis}
@@ -179,7 +156,7 @@ function AIAnalysisPanel() {
                         </div>
                     )}
 
-                    {/* 초기 상태 (분석 없음) */}
+                    {/* 초기 상태 */}
                     {!loading && !error && !analysis && (
                         <div className="text-center py-12">
                             <div className="bg-white rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4 shadow-md">
@@ -189,7 +166,8 @@ function AIAnalysisPanel() {
                                 AI 경제 분석을 시작하세요
                             </h3>
                             <p className="text-gray-600 mb-6">
-                                Google Gemini가 현재 경제 지표를 종합 분석합니다
+                                Google Gemini가 현재 경제 지표를 종합 분석하고<br />
+                                미국 증시 투자 전망을 제시합니다
                             </p>
                             <button
                                 onClick={generateAnalysis}

@@ -110,24 +110,20 @@ class GeminiService:
             # 경제 데이터 준비
             context = self._prepare_economic_context(indicators)
 
-            # AI 프롬프트 생성
+            # 👇 2개 섹션만 요청
             prompt = f"""당신은 경제 분석 전문가입니다. 다음 미국 경제 지표를 분석해주세요.
 
-{context}
+    {context}
 
-다음 형식으로 정확히 분석해주세요:
+    다음 2가지만 간결하게 작성해주세요:
 
-## 전체 요약
-(2-3문장으로 전체 경제 상황 요약)
+    ## 전체 요약
+    (현재 미국 경제 상황을 2-3문장으로 요약)
 
-## 주요 포인트
-- (포인트 1)
-- (포인트 2)
+    ## 미국 증시 투자 전망
+    (S&P500, 나스닥 등 미국 증시 투자 전망을 2-3문장으로 제시)
 
-## 향후 전망
-(2-3문장으로 향후 전망 예측과 투자 조언)
-
-한국어로 작성하되, 간결하고 이해하기 쉽게 설명해주세요."""
+    한국어로 작성하되, 전문적이면서도 이해하기 쉽게 설명해주세요."""
 
             # Gemini API 호출
             print("🤖 Gemini API 호출 중...")
@@ -136,15 +132,12 @@ class GeminiService:
             # 응답 파싱
             analysis_text = response.text
             print(f"✅ AI 분석 생성 완료 (길이: {len(analysis_text)})")
-            print(f"📄 원본 분석:\n{analysis_text}\n")
 
-            # 간단한 파싱
+            # 👇 2개 섹션 파싱
             lines = analysis_text.strip().split('\n')
 
             summary = ""
-            key_points = []
             outlook = ""
-
             current_section = None
 
             for line in lines:
@@ -152,30 +145,43 @@ class GeminiService:
                 if not line:
                     continue
 
-                if '전체 요약' in line or '요약' in line or '1.' in line:
+                # 섹션 헤더 감지
+                if '전체 요약' in line or line.startswith('## 전체 요약'):
                     current_section = 'summary'
                     continue
-                elif '주요 포인트' in line or '포인트' in line or '2.' in line:
-                    current_section = 'points'
-                    continue
-                elif '전망' in line or 'outlook' in line.lower() or '3.' in line:
+                elif '미국 증시' in line or '투자 전망' in line or line.startswith('## 미국'):
                     current_section = 'outlook'
                     continue
 
-                # 번호나 불릿 제거
-                clean_line = line.lstrip('0123456789.-•*# ')
+                # 내용 저장 (**, # 제거)
+                clean_line = line.replace('**', '').replace('#', '').strip()
 
-                if current_section == 'summary' and clean_line:
+                if not clean_line:
+                    continue
+
+                if current_section == 'summary':
                     summary += clean_line + " "
-                elif current_section == 'points' and clean_line:
-                    key_points.append(clean_line)
-                elif current_section == 'outlook' and clean_line:
+                elif current_section == 'outlook':
                     outlook += clean_line + " "
 
+            # 결과 정리
+            summary = summary.strip()
+            outlook = outlook.strip()
+
+            # Fallback
+            if not summary:
+                summary = "미국 경제는 현재 안정적인 상황을 유지하고 있습니다."
+
+            if not outlook:
+                outlook = "시장 상황을 지속적으로 모니터링하는 것이 중요합니다."
+
+            print(f"📊 파싱 결과:")
+            print(f"   전체 요약: {len(summary)} 글자")
+            print(f"   투자 전망: {len(outlook)} 글자")
+
             return {
-                "summary": summary.strip() or analysis_text[:300],
-                "key_points": key_points if key_points else ["분석을 생성했습니다."],
-                "outlook": outlook.strip() or "지속적인 모니터링이 필요합니다.",
+                "summary": summary,
+                "outlook": outlook,
                 "raw_analysis": analysis_text
             }
 
@@ -185,7 +191,6 @@ class GeminiService:
             traceback.print_exc()
             return {
                 "summary": "AI 분석을 생성하는 중 오류가 발생했습니다.",
-                "key_points": ["현재 경제 지표를 확인 중입니다."],
                 "outlook": "데이터를 다시 확인해주세요.",
                 "error": str(e)
             }
