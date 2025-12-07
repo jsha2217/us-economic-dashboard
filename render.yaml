@@ -1,24 +1,24 @@
-## Render 배포 설정
-#services:
-#  # Backend 서비스
-#  - type: web
-#    name: us-economic-dashboard-api
-#    env: python
-#    region: oregon
-#    buildCommand: backend && pip install -r requirements.txt
-#    startCommand: backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT
-#    envVars:
-#      - key: PYTHON_VERSION
-#        value: 3.12.0
-#      - key: FRED_API_KEY
-#        sync: false  # 수동 입력 필요
-#      - key: GEMINI_API_KEY
-#        sync: false  # 수동 입력 필요
-#      - key: HOST
-#        value: 0.0.0.0
-#      - key: PORT
-#        fromGroup: web
-#      - key: DEBUG
-#        value: False
-#      - key: CACHE_TTL
-#        value: 3600
+# Render 배포 설정
+services:
+  # Backend 서비스
+  - type: web
+    name: us-economic-dashboard-api
+    env: python
+    region: oregon
+    buildCommand: backend && pip install -r requirements.txt
+    startCommand: backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.0
+      - key: FRED_API_KEY
+        sync: false  # 수동 입력 필요
+      - key: GEMINI_API_KEY
+        sync: false  # 수동 입력 필요
+      - key: HOST
+        value: 0.0.0.0
+      - key: PORT
+        fromGroup: web
+      - key: DEBUG
+        value: False
+      - key: CACHE_TTL
+        value: 3600
