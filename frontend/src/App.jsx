@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { api } from './services/api';
 import Header from './components/Header';
 import IndicatorCard from './components/IndicatorCard';
+import AIAnalysisPanel from './components/AIAnalysisPanel';
 import InterestRateChart from './components/charts/InterestRateChart';
 import InflationChart from './components/charts/InflationChart';
 import EmploymentChart from './components/charts/EmploymentChart';
@@ -36,13 +37,11 @@ function App() {
         }
     };
 
-    // Quick Metrics 데이터 추출
     const getQuickMetrics = () => {
         if (!summary) return null;
 
         const metrics = [];
 
-        // 기준금리
         if (summary.summary.interest_rates?.DFF) {
             const dff = summary.summary.interest_rates.DFF;
             metrics.push({
@@ -55,7 +54,6 @@ function App() {
             });
         }
 
-        // CPI
         if (summary.summary.inflation?.CPIAUCSL) {
             const cpi = summary.summary.inflation.CPIAUCSL;
             metrics.push({
@@ -68,7 +66,6 @@ function App() {
             });
         }
 
-        // 실업률
         if (summary.summary.employment?.UNRATE) {
             const unrate = summary.summary.employment.UNRATE;
             metrics.push({
@@ -81,7 +78,6 @@ function App() {
             });
         }
 
-        // GDP 성장률
         if (summary.summary.gdp?.A191RL1Q225SBEA) {
             const growth = summary.summary.gdp.A191RL1Q225SBEA;
             metrics.push({
@@ -94,7 +90,6 @@ function App() {
             });
         }
 
-        // 소비자심리
         if (summary.summary.leading?.UMCSENT) {
             const sentiment = summary.summary.leading.UMCSENT;
             metrics.push({
@@ -114,7 +109,6 @@ function App() {
 
     return (
         <div className="min-h-screen bg-gray-50">
-            {/* 헤더 */}
             <Header
                 onRefresh={loadData}
                 lastUpdated={lastUpdated}
@@ -153,6 +147,13 @@ function App() {
                     </section>
                 )}
 
+                {/* AI 분석 패널 추가 */}
+                {!loading && !error && (
+                    <section className="mb-8">
+                        <AIAnalysisPanel />
+                    </section>
+                )}
+
                 {/* 차트 섹션 */}
                 {!loading && !error && (
                     <section className="space-y-8">
@@ -160,24 +161,15 @@ function App() {
                             📊 상세 차트
                         </h2>
 
-                        {/* 금리 차트 */}
                         <InterestRateChart />
-
-                        {/* 물가 차트 */}
                         <InflationChart />
-
-                        {/* 고용 차트 */}
                         <EmploymentChart />
-
-                        {/* GDP 차트 */}
                         <GDPChart />
-
-                        {/* 경기선행지수 */}
                         <LEIChart />
                     </section>
                 )}
 
-                {/* 전체 요약 (접을 수 있게) */}
+                {/* 전체 요약 */}
                 {summary && (
                     <section className="mt-8">
                         <details className="bg-white border border-gray-200 rounded-lg">
@@ -186,7 +178,6 @@ function App() {
                             </summary>
 
                             <div className="p-6 pt-0 space-y-6">
-                                {/* 금리 */}
                                 {summary.summary.interest_rates && (
                                     <div>
                                         <h3 className="text-lg font-semibold text-gray-700 mb-3">
@@ -206,7 +197,6 @@ function App() {
                                     </div>
                                 )}
 
-                                {/* 물가 */}
                                 {summary.summary.inflation && (
                                     <div>
                                         <h3 className="text-lg font-semibold text-gray-700 mb-3">
@@ -226,7 +216,6 @@ function App() {
                                     </div>
                                 )}
 
-                                {/* 고용 */}
                                 {summary.summary.employment && (
                                     <div>
                                         <h3 className="text-lg font-semibold text-gray-700 mb-3">
@@ -246,7 +235,6 @@ function App() {
                                     </div>
                                 )}
 
-                                {/* GDP */}
                                 {summary.summary.gdp && (
                                     <div>
                                         <h3 className="text-lg font-semibold text-gray-700 mb-3">
@@ -268,7 +256,6 @@ function App() {
                                     </div>
                                 )}
 
-                                {/* 경기선행지수 */}
                                 {summary.summary.leading && (
                                     <div>
                                         <h3 className="text-lg font-semibold text-gray-700 mb-3">
@@ -295,6 +282,7 @@ function App() {
                 {/* 푸터 */}
                 <footer className="mt-12 pt-8 border-t border-gray-200 text-center text-sm text-gray-500">
                     <p>데이터 출처: Federal Reserve Economic Data (FRED)</p>
+                    <p className="mt-2">AI 분석: Google Gemini 1.5 Flash</p>
                     <p className="mt-2">© 2025 US Economic Dashboard</p>
                 </footer>
             </main>

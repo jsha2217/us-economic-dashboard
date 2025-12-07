@@ -4,10 +4,8 @@
  */
 import axios from 'axios';
 
-// 백엔드 API 주소
 const API_BASE_URL = 'http://localhost:8000';
 
-// axios 인스턴스 생성
 const apiClient = axios.create({
     baseURL: API_BASE_URL,
     timeout: 30000,
@@ -16,9 +14,6 @@ const apiClient = axios.create({
     }
 });
 
-/**
- * API 응답 에러 처리
- */
 const handleApiError = (error, defaultMessage) => {
     if (error.response) {
         console.error('API 에러:', error.response.data);
@@ -32,11 +27,7 @@ const handleApiError = (error, defaultMessage) => {
     }
 };
 
-/**
- * API 함수들
- */
 export const api = {
-    // 헬스 체크
     healthCheck: async () => {
         try {
             const response = await apiClient.get('/health');
@@ -46,7 +37,6 @@ export const api = {
         }
     },
 
-    // 금리 지표
     getInterestRates: async (period = '1y') => {
         try {
             const response = await apiClient.get('/api/indicators/interest-rates', {
@@ -58,7 +48,6 @@ export const api = {
         }
     },
 
-    // 물가 지표
     getInflation: async (period = '1y') => {
         try {
             const response = await apiClient.get('/api/indicators/inflation', {
@@ -70,7 +59,6 @@ export const api = {
         }
     },
 
-    // 고용 지표
     getEmployment: async (period = '1y') => {
         try {
             const response = await apiClient.get('/api/indicators/employment', {
@@ -82,7 +70,6 @@ export const api = {
         }
     },
 
-    // GDP 지표
     getGDP: async (period = '5y') => {
         try {
             const response = await apiClient.get('/api/indicators/gdp', {
@@ -94,7 +81,6 @@ export const api = {
         }
     },
 
-    // 경기선행지수
     getLeadingIndicators: async (period = '1y') => {
         try {
             const response = await apiClient.get('/api/indicators/leading', {
@@ -102,17 +88,35 @@ export const api = {
             });
             return response.data;
         } catch (error) {
-            handleApiError(error, '경기선행지수를 가져오는데 실패했습니다.');
+            handleApiError(error, '경기선행지수 데이터를 가져오는데 실패했습니다.');
         }
     },
 
-    // 전체 요약
     getSummary: async () => {
         try {
             const response = await apiClient.get('/api/indicators/summary');
             return response.data;
         } catch (error) {
             handleApiError(error, '요약 데이터를 가져오는데 실패했습니다.');
+        }
+    },
+
+    // AI 분석 함수 추가
+    generateAnalysis: async () => {
+        try {
+            const response = await apiClient.post('/api/analysis/generate');
+            return response.data;
+        } catch (error) {
+            handleApiError(error, 'AI 분석을 생성하는데 실패했습니다.');
+        }
+    },
+
+    testGemini: async () => {
+        try {
+            const response = await apiClient.get('/api/analysis/test');
+            return response.data;
+        } catch (error) {
+            handleApiError(error, 'Gemini API 테스트 실패');
         }
     }
 };
