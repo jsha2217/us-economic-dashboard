@@ -1,25 +1,18 @@
-/**
- * 경제 지표 카드 컴포넌트
- * Quick Metrics용
- */
 import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
 
 function IndicatorCard({ title, value, unit = '', change, changePercent, date, icon, color = 'blue' }) {
-    // 변화 추세 아이콘
     const getTrendIcon = () => {
-        if (!change) return <Minus className="w-5 h-5" />;
-        if (change > 0) return <TrendingUp className="w-5 h-5" />;
-        return <TrendingDown className="w-5 h-5" />;
+        if (!change) return <Minus className="w-4 h-4 sm:w-5 sm:h-5" />;
+        if (change > 0) return <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5" />;
+        return <TrendingDown className="w-4 h-4 sm:w-5 sm:h-5" />;
     };
 
-    // 변화 색상
     const getTrendColor = () => {
         if (!change) return 'text-gray-600';
         if (change > 0) return 'text-green-600';
         return 'text-red-600';
     };
 
-    // 카드 색상
     const colorClasses = {
         blue: 'border-blue-200 bg-blue-50',
         orange: 'border-orange-200 bg-orange-50',
@@ -37,12 +30,12 @@ function IndicatorCard({ title, value, unit = '', change, changePercent, date, i
     };
 
     return (
-        <div className={`rounded-lg border-2 p-5 ${colorClasses[color]} hover:shadow-md transition`}>
+        <div className={`rounded-lg border-2 p-4 sm:p-5 ${colorClasses[color]} hover:shadow-md transition`}>
             {/* 헤더 */}
-            <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center justify-between mb-2 sm:mb-3">
                 <div className="flex items-center gap-2">
-                    {icon && <span className="text-2xl">{icon}</span>}
-                    <h3 className="text-sm font-semibold text-gray-700">{title}</h3>
+                    {icon && <span className="text-xl sm:text-2xl">{icon}</span>}
+                    <h3 className="text-xs sm:text-sm font-semibold text-gray-700">{title}</h3>
                 </div>
                 <div className={getTrendColor()}>
                     {getTrendIcon()}
@@ -51,14 +44,14 @@ function IndicatorCard({ title, value, unit = '', change, changePercent, date, i
 
             {/* 값 */}
             <div className="mb-2">
-                <p className={`text-4xl font-bold ${textColorClasses[color]}`}>
+                <p className={`text-3xl sm:text-4xl font-bold ${textColorClasses[color]}`}>
                     {value}{unit}
                 </p>
             </div>
 
             {/* 변화량 */}
             {(change !== null && change !== undefined) && (
-                <div className={`flex items-center gap-2 text-sm ${getTrendColor()}`}>
+                <div className={`flex items-center gap-2 text-xs sm:text-sm ${getTrendColor()}`}>
           <span className="font-semibold">
             {change > 0 ? '+' : ''}{change}{unit}
           </span>

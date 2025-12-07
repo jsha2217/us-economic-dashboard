@@ -115,18 +115,19 @@ function App() {
                 loading={loading}
             />
 
-            <main className="max-w-7xl mx-auto px-8 py-8">
+            {/* 👇 모바일 패딩 조정: px-8 → px-4 sm:px-6 lg:px-8 */}
+            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
                 {/* 에러 */}
                 {error && (
-                    <div className="bg-red-50 border-2 border-red-200 rounded-lg p-6 mb-8">
-                        <h3 className="text-red-700 font-bold mb-2 text-lg">❌ 에러 발생</h3>
-                        <p className="text-red-600 mb-3">{error}</p>
-                        <p className="text-sm text-red-500 mb-4">
+                    <div className="bg-red-50 border-2 border-red-200 rounded-lg p-4 sm:p-6 mb-6 sm:mb-8">
+                        <h3 className="text-red-700 font-bold mb-2 text-base sm:text-lg">❌ 에러 발생</h3>
+                        <p className="text-red-600 mb-3 text-sm sm:text-base">{error}</p>
+                        <p className="text-xs sm:text-sm text-red-500 mb-4">
                             💡 백엔드 서버가 실행 중인지 확인하세요: http://localhost:8000
                         </p>
                         <button
                             onClick={loadData}
-                            className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 font-semibold"
+                            className="bg-red-600 text-white px-4 sm:px-6 py-2 rounded-lg hover:bg-red-700 font-semibold text-sm sm:text-base"
                         >
                             다시 시도
                         </button>
@@ -135,11 +136,12 @@ function App() {
 
                 {/* Quick Metrics */}
                 {!loading && !error && quickMetrics && (
-                    <section className="mb-8">
-                        <h2 className="text-2xl font-bold text-gray-800 mb-4">
+                    <section className="mb-6 sm:mb-8">
+                        <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-3 sm:mb-4">
                             ⚡ 주요 지표
                         </h2>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                        {/* 👇 모바일: 1열, 태블릿: 2열, 데스크톱: 5열 */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
                             {quickMetrics.map((metric, index) => (
                                 <IndicatorCard key={index} {...metric} />
                             ))}
@@ -147,17 +149,17 @@ function App() {
                     </section>
                 )}
 
-                {/* AI 분석 패널 추가 */}
+                {/* AI 분석 패널 */}
                 {!loading && !error && (
-                    <section className="mb-8">
+                    <section className="mb-6 sm:mb-8">
                         <AIAnalysisPanel />
                     </section>
                 )}
 
                 {/* 차트 섹션 */}
                 {!loading && !error && (
-                    <section className="space-y-8">
-                        <h2 className="text-2xl font-bold text-gray-800 mb-4">
+                    <section className="space-y-6 sm:space-y-8">
+                        <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-3 sm:mb-4">
                             📊 상세 차트
                         </h2>
 
@@ -171,23 +173,24 @@ function App() {
 
                 {/* 전체 요약 */}
                 {summary && (
-                    <section className="mt-8">
+                    <section className="mt-6 sm:mt-8">
                         <details className="bg-white border border-gray-200 rounded-lg">
-                            <summary className="p-6 cursor-pointer hover:bg-gray-50 font-semibold text-lg text-gray-800">
+                            <summary className="p-4 sm:p-6 cursor-pointer hover:bg-gray-50 font-semibold text-base sm:text-lg text-gray-800">
                                 📋 전체 지표 상세 정보
                             </summary>
 
-                            <div className="p-6 pt-0 space-y-6">
+                            <div className="p-4 sm:p-6 pt-0 space-y-4 sm:space-y-6">
                                 {summary.summary.interest_rates && (
                                     <div>
-                                        <h3 className="text-lg font-semibold text-gray-700 mb-3">
+                                        <h3 className="text-base sm:text-lg font-semibold text-gray-700 mb-3">
                                             💰 금리 (Interest Rates)
                                         </h3>
-                                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                        {/* 👇 모바일: 1열, 태블릿: 2열, 데스크톱: 3열 */}
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                                             {Object.entries(summary.summary.interest_rates).map(([key, data]) => (
-                                                <div key={key} className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                                                    <p className="text-sm text-gray-600 mb-1">{data.name}</p>
-                                                    <p className="text-2xl font-bold text-blue-600">
+                                                <div key={key} className="bg-gray-50 p-3 sm:p-4 rounded-lg border border-gray-200">
+                                                    <p className="text-xs sm:text-sm text-gray-600 mb-1">{data.name}</p>
+                                                    <p className="text-xl sm:text-2xl font-bold text-blue-600">
                                                         {data.value}%
                                                     </p>
                                                     <p className="text-xs text-gray-500 mt-1">{data.date}</p>
@@ -199,14 +202,14 @@ function App() {
 
                                 {summary.summary.inflation && (
                                     <div>
-                                        <h3 className="text-lg font-semibold text-gray-700 mb-3">
+                                        <h3 className="text-base sm:text-lg font-semibold text-gray-700 mb-3">
                                             📈 물가 (Inflation)
                                         </h3>
-                                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                                             {Object.entries(summary.summary.inflation).map(([key, data]) => (
-                                                <div key={key} className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                                                    <p className="text-sm text-gray-600 mb-1">{data.name}</p>
-                                                    <p className="text-2xl font-bold text-orange-600">
+                                                <div key={key} className="bg-gray-50 p-3 sm:p-4 rounded-lg border border-gray-200">
+                                                    <p className="text-xs sm:text-sm text-gray-600 mb-1">{data.name}</p>
+                                                    <p className="text-xl sm:text-2xl font-bold text-orange-600">
                                                         {data.value}
                                                     </p>
                                                     <p className="text-xs text-gray-500 mt-1">{data.date}</p>
@@ -218,14 +221,14 @@ function App() {
 
                                 {summary.summary.employment && (
                                     <div>
-                                        <h3 className="text-lg font-semibold text-gray-700 mb-3">
+                                        <h3 className="text-base sm:text-lg font-semibold text-gray-700 mb-3">
                                             💼 고용 (Employment)
                                         </h3>
-                                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                                             {Object.entries(summary.summary.employment).map(([key, data]) => (
-                                                <div key={key} className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                                                    <p className="text-sm text-gray-600 mb-1">{data.name}</p>
-                                                    <p className="text-2xl font-bold text-green-600">
+                                                <div key={key} className="bg-gray-50 p-3 sm:p-4 rounded-lg border border-gray-200">
+                                                    <p className="text-xs sm:text-sm text-gray-600 mb-1">{data.name}</p>
+                                                    <p className="text-xl sm:text-2xl font-bold text-green-600">
                                                         {key === 'UNRATE' ? `${data.value}%` : data.value.toLocaleString()}
                                                     </p>
                                                     <p className="text-xs text-gray-500 mt-1">{data.date}</p>
@@ -237,14 +240,14 @@ function App() {
 
                                 {summary.summary.gdp && (
                                     <div>
-                                        <h3 className="text-lg font-semibold text-gray-700 mb-3">
+                                        <h3 className="text-base sm:text-lg font-semibold text-gray-700 mb-3">
                                             📊 GDP 및 성장
                                         </h3>
-                                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                                             {Object.entries(summary.summary.gdp).map(([key, data]) => (
-                                                <div key={key} className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                                                    <p className="text-sm text-gray-600 mb-1">{data.name}</p>
-                                                    <p className="text-2xl font-bold text-purple-600">
+                                                <div key={key} className="bg-gray-50 p-3 sm:p-4 rounded-lg border border-gray-200">
+                                                    <p className="text-xs sm:text-sm text-gray-600 mb-1">{data.name}</p>
+                                                    <p className="text-xl sm:text-2xl font-bold text-purple-600">
                                                         {key === 'A191RL1Q225SBEA'
                                                             ? `${data.value}%`
                                                             : data.value.toLocaleString()}
@@ -258,14 +261,14 @@ function App() {
 
                                 {summary.summary.leading && (
                                     <div>
-                                        <h3 className="text-lg font-semibold text-gray-700 mb-3">
+                                        <h3 className="text-base sm:text-lg font-semibold text-gray-700 mb-3">
                                             🔮 경기선행지수
                                         </h3>
-                                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                                             {Object.entries(summary.summary.leading).map(([key, data]) => (
-                                                <div key={key} className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                                                    <p className="text-sm text-gray-600 mb-1">{data.name}</p>
-                                                    <p className="text-2xl font-bold text-indigo-600">
+                                                <div key={key} className="bg-gray-50 p-3 sm:p-4 rounded-lg border border-gray-200">
+                                                    <p className="text-xs sm:text-sm text-gray-600 mb-1">{data.name}</p>
+                                                    <p className="text-xl sm:text-2xl font-bold text-indigo-600">
                                                         {data.value.toLocaleString()}
                                                     </p>
                                                     <p className="text-xs text-gray-500 mt-1">{data.date}</p>
@@ -280,9 +283,9 @@ function App() {
                 )}
 
                 {/* 푸터 */}
-                <footer className="mt-12 pt-8 border-t border-gray-200 text-center text-sm text-gray-500">
+                <footer className="mt-8 sm:mt-12 pt-6 sm:pt-8 border-t border-gray-200 text-center text-xs sm:text-sm text-gray-500">
                     <p>데이터 출처: Federal Reserve Economic Data (FRED)</p>
-                    <p className="mt-2">AI 분석: Google Gemini 1.5 Flash</p>
+                    <p className="mt-2">AI 분석: Google Gemini 2.5 Flash</p>
                     <p className="mt-2">© 2025 US Economic Dashboard</p>
                 </footer>
             </main>

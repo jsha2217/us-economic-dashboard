@@ -113,23 +113,23 @@ function GDPChart() {
     return (
         <div className="bg-white rounded-lg border border-gray-200 p-6">
             {/* 헤더 */}
-            <div className="flex justify-between items-center mb-6">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6 gap-3 sm:gap-0">
                 <div>
-                    <h2 className="text-2xl font-bold text-gray-800">
+                    <h2 className="text-xl sm:text-2xl font-bold text-gray-800">
                         📊 GDP 및 경제 성장
                     </h2>
-                    <p className="text-sm text-gray-500 mt-1">
+                    <p className="text-xs sm:text-sm text-gray-500 mt-1">
                         Real GDP, 성장률, 산업생산지수
                     </p>
                 </div>
 
                 {/* 기간 선택 */}
-                <div className="flex gap-2">
-                    {['3y', '5y', '10y'].map((p) => (
+                <div className="flex gap-1 sm:gap-2 flex-wrap">
+                    {['1m', '3m', '6m', '1y', '3y', '5y'].map((p) => (
                         <button
                             key={p}
-                            onClick={() => setPeriod(p === '10y' ? '5y' : p)}
-                            className={`px-3 py-1 rounded text-sm font-medium transition ${
+                            onClick={() => setPeriod(p)}
+                            className={`px-2 sm:px-3 py-1 rounded text-xs sm:text-sm font-medium transition ${
                                 period === p
                                     ? 'bg-purple-600 text-white'
                                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
