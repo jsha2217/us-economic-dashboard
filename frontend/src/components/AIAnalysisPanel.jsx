@@ -45,7 +45,7 @@ function AIAnalysisPanel() {
                                 🤖 AI 경제 분석
                             </h2>
                             <p className="text-purple-100 text-sm mt-1">
-                                Google Gemini 1.5 Flash
+                                Google Gemini 1.5 Pro
                             </p>
                         </div>
                     </div>
@@ -167,7 +167,7 @@ function AIAnalysisPanel() {
                             <div className="flex items-center justify-between text-sm text-gray-500 pt-4 border-t border-purple-100">
                                 <div className="flex items-center gap-2">
                                     <Sparkles className="w-4 h-4" />
-                                    <span>분석 모델: {analysis.model}</span>
+                                    <span>분석 모델: Google Gemini Pro</span>
                                 </div>
                                 <button
                                     onClick={generateAnalysis}

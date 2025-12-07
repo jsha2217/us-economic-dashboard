@@ -28,7 +28,7 @@ apscheduler==3.10.4
 # Anthropic Claude API 클라이언트 (AI 분석)
 anthropic==0.7.1
 
-google-generativeai==0.3.2
+google-generativeai>=0.8.0
 
 # 버전 충돌로 패키지 설치가 불가한 경우 :
 # >>> pip install --upgrade -r requirements.txt

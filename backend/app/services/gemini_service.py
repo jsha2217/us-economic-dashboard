@@ -1,6 +1,6 @@
 """
 Google Gemini AI 서비스
-경제 지표를 분석 요약
+경제 지표를 분석하고 요약합니다.
 """
 import google.generativeai as genai
 from typing import Dict, List, Optional
@@ -18,18 +18,48 @@ class GeminiService:
         # Gemini API 설정
         genai.configure(api_key=settings.gemini_api_key)
 
-        # 모델 초기화 (Gemini 1.5 Flash - 무료)
-        self.model = genai.GenerativeModel('gemini-1.5-flash')
+        # 사용 가능한 모델 리스트 확인
+        try:
+            available_models = [m.name for m in genai.list_models()
+                                if 'generateContent' in m.supported_generation_methods]
+            print(f"🤖 사용 가능한 Gemini 모델 (generateContent 지원): {available_models[:5]}")
+        except Exception as e:
+            print(f"⚠️ 모델 리스트 확인 실패: {e}")
+            available_models = []
+
+        # 최신 모델 우선 순위로 시도
+        model_options = [
+            'models/gemini-2.5-flash',  # 최신 (로그에서 확인됨)
+            'models/gemini-2.0-flash-exp',  # 실험 버전
+            'models/gemini-2.0-flash',  # 2.0 버전
+            'models/gemini-1.5-flash',  # 1.5 버전
+            'models/gemini-1.5-pro',
+            'models/gemini-pro',
+            'gemini-2.5-flash',  # models/ 없는 버전도 시도
+            'gemini-2.0-flash',
+            'gemini-1.5-flash',
+            'gemini-pro'
+        ]
+
+        self.model = None
+        for model_name in model_options:
+            try:
+                print(f"🔍 모델 시도 중: {model_name}")
+                self.model = genai.GenerativeModel(model_name)
+                # 실제로 작동하는지 간단한 테스트
+                test_response = self.model.generate_content("테스트")
+                print(f"✅ 모델 로드 및 테스트 성공: {model_name}")
+                break
+            except Exception as e:
+                print(f"❌ {model_name} 실패: {str(e)[:100]}")
+                continue
+
+        if self.model is None:
+            raise Exception("사용 가능한 Gemini 모델을 찾을 수 없습니다.")
 
     def _prepare_economic_context(self, indicators: Dict) -> str:
         """
         경제 지표 데이터를 AI가 이해할 수 있는 형태로 변환
-
-        Args:
-            indicators: 경제 지표 딕셔너리
-
-        Returns:
-            포맷된 문자열
         """
         context = "현재 미국 경제 지표:\n\n"
 
@@ -75,16 +105,6 @@ class GeminiService:
     async def analyze_economy(self, indicators: Dict) -> Dict:
         """
         경제 상황을 종합 분석합니다.
-
-        Args:
-            indicators: 경제 지표 딕셔너리
-
-        Returns:
-            {
-                "summary": "전체 요약",
-                "key_points": ["주요 포인트1", "주요 포인트2", ...],
-                "outlook": "전망"
-            }
         """
         try:
             # 경제 데이터 준비
@@ -95,22 +115,30 @@ class GeminiService:
 
 {context}
 
-다음 형식으로 분석해주세요:
+다음 형식으로 정확히 분석해주세요:
 
-1. 전체 요약 (2-3문장)
-2. 주요 포인트 (3-5개, 각각 한 문장)
-3. 향후 전망 (2-3문장)
+## 전체 요약
+(2-3문장으로 전체 경제 상황 요약)
 
-한국어로 작성하되, 전문적이면서도 이해하기 쉽게 설명해주세요.
-경제 용어는 필요시 간단히 설명을 덧붙여주세요."""
+## 주요 포인트
+- (포인트 1)
+- (포인트 2)
+
+## 향후 전망
+(2-3문장으로 향후 전망 예측과 투자 조언)
+
+한국어로 작성하되, 간결하고 이해하기 쉽게 설명해주세요."""
 
             # Gemini API 호출
+            print("🤖 Gemini API 호출 중...")
             response = self.model.generate_content(prompt)
 
             # 응답 파싱
             analysis_text = response.text
+            print(f"✅ AI 분석 생성 완료 (길이: {len(analysis_text)})")
+            print(f"📄 원본 분석:\n{analysis_text}\n")
 
-            # 간단한 파싱 (실제로는 더 정교하게 파싱 가능)
+            # 간단한 파싱
             lines = analysis_text.strip().split('\n')
 
             summary = ""
@@ -124,18 +152,18 @@ class GeminiService:
                 if not line:
                     continue
 
-                if '전체 요약' in line or '요약' in line:
+                if '전체 요약' in line or '요약' in line or '1.' in line:
                     current_section = 'summary'
                     continue
-                elif '주요 포인트' in line or '포인트' in line:
+                elif '주요 포인트' in line or '포인트' in line or '2.' in line:
                     current_section = 'points'
                     continue
-                elif '전망' in line or 'outlook' in line.lower():
+                elif '전망' in line or 'outlook' in line.lower() or '3.' in line:
                     current_section = 'outlook'
                     continue
 
                 # 번호나 불릿 제거
-                clean_line = line.lstrip('0123456789.-•* ')
+                clean_line = line.lstrip('0123456789.-•*# ')
 
                 if current_section == 'summary' and clean_line:
                     summary += clean_line + " "
@@ -145,7 +173,7 @@ class GeminiService:
                     outlook += clean_line + " "
 
             return {
-                "summary": summary.strip() or analysis_text[:200],
+                "summary": summary.strip() or analysis_text[:300],
                 "key_points": key_points if key_points else ["분석을 생성했습니다."],
                 "outlook": outlook.strip() or "지속적인 모니터링이 필요합니다.",
                 "raw_analysis": analysis_text
@@ -153,6 +181,8 @@ class GeminiService:
 
         except Exception as e:
             print(f"❌ Gemini API 에러: {str(e)}")
+            import traceback
+            traceback.print_exc()
             return {
                 "summary": "AI 분석을 생성하는 중 오류가 발생했습니다.",
                 "key_points": ["현재 경제 지표를 확인 중입니다."],
@@ -164,14 +194,6 @@ class GeminiService:
                                      previous_value: Optional[float] = None) -> str:
         """
         특정 지표에 대한 간단한 인사이트 생성
-
-        Args:
-            indicator_name: 지표 이름
-            current_value: 현재 값
-            previous_value: 이전 값 (선택)
-
-        Returns:
-            인사이트 문자열
         """
         try:
             change_text = ""
