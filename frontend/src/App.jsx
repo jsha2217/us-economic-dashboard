@@ -3,6 +3,8 @@ import { api } from './services/api';
 import InterestRateChart from './components/charts/InterestRateChart';
 import InflationChart from './components/charts/InflationChart';
 import EmploymentChart from './components/charts/EmploymentChart';
+import GDPChart from './components/charts/GDPChart';
+import LEIChart from './components/charts/LEIChart';
 import './App.css';
 
 function App() {
@@ -73,7 +75,7 @@ function App() {
                     </div>
                 )}
 
-                {/* 👇 차트 섹션 */}
+                {/* 차트 섹션 */}
                 {!loading && !error && (
                     <div className="space-y-8 mb-8">
                         {/* 금리 차트 */}
@@ -84,6 +86,12 @@ function App() {
 
                         {/* 고용 차트 */}
                         <EmploymentChart />
+
+                        {/* GDP 차트 */}
+                        <GDPChart />
+
+                        {/* 경기선행지수 */}
+                        <LEIChart />
                     </div>
                 )}
 
@@ -146,6 +154,48 @@ function App() {
                                             <p className="text-sm text-gray-600 mb-1">{data.name}</p>
                                             <p className="text-3xl font-bold text-green-600">
                                                 {key === 'UNRATE' ? `${data.value}%` : data.value.toLocaleString()}
+                                            </p>
+                                            <p className="text-xs text-gray-500 mt-1">{data.date}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* GDP */}
+                        {summary.summary.gdp && (
+                            <div className="mb-6">
+                                <h3 className="text-lg font-semibold text-gray-700 mb-3">
+                                    📊 GDP 및 성장
+                                </h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                    {Object.entries(summary.summary.gdp).map(([key, data]) => (
+                                        <div key={key} className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                                            <p className="text-sm text-gray-600 mb-1">{data.name}</p>
+                                            <p className="text-3xl font-bold text-purple-600">
+                                                {key === 'A191RL1Q225SBEA'
+                                                    ? `${data.value}%`
+                                                    : data.value.toLocaleString()}
+                                            </p>
+                                            <p className="text-xs text-gray-500 mt-1">{data.date}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* 경기선행지수 */}
+                        {summary.summary.leading && (
+                            <div className="mb-6">
+                                <h3 className="text-lg font-semibold text-gray-700 mb-3">
+                                    🔮 경기선행지수
+                                </h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                    {Object.entries(summary.summary.leading).map(([key, data]) => (
+                                        <div key={key} className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                                            <p className="text-sm text-gray-600 mb-1">{data.name}</p>
+                                            <p className="text-3xl font-bold text-indigo-600">
+                                                {data.value.toLocaleString()}
                                             </p>
                                             <p className="text-xs text-gray-500 mt-1">{data.date}</p>
                                         </div>

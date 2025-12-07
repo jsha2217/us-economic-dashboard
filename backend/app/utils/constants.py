@@ -14,7 +14,7 @@ INTEREST_RATES = {
 
 # 경기선행지수
 LEADING_INDICATORS = {
-    "USSLIND": "Leading Index for US",
+    # "USSLIND": "Leading Index for US",    # 데이터 없음
     "UMCSENT": "Consumer Sentiment",
     "PERMIT": "New Housing Permits",
     "RETAILSMNSA": "Retail Sales"
