@@ -1,11 +1,23 @@
 /**
- * API 서비스
- * 백엔드 FastAPI와 통신
+ * API 서비스 모듈
+ *
+ * 백엔드 FastAPI 서버와 통신하는 함수들을 제공합니다.
  */
+
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:8000';
+/**
+ * 백엔드 API 기본 URL
+ * 개발: localhost:8000
+ * 프로덕션: Render 배포 URL (환경 변수)
+ */
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
+console.log('🌐 API Base URL:', API_BASE_URL);
+
+/**
+ * Axios 클라이언트 인스턴스
+ */
 const apiClient = axios.create({
     baseURL: API_BASE_URL,
     timeout: 30000,
@@ -14,13 +26,16 @@ const apiClient = axios.create({
     }
 });
 
+/**
+ * API 에러를 처리하는 헬퍼 함수
+ */
 const handleApiError = (error, defaultMessage) => {
     if (error.response) {
         console.error('API 에러:', error.response.data);
         throw new Error(error.response.data.detail || defaultMessage);
     } else if (error.request) {
         console.error('네트워크 에러:', error.request);
-        throw new Error('서버에 연결할 수 없습니다. 백엔드가 실행 중인지 확인하세요.');
+        throw new Error('서버에 연결할 수 없습니다. 잠시 후 다시 시도해주세요.');
     } else {
         console.error('요청 에러:', error.message);
         throw new Error(defaultMessage);
@@ -81,7 +96,7 @@ export const api = {
         }
     },
 
-    getLeadingIndicators: async (period = '1y') => {
+    getLeading: async (period = '1y') => {
         try {
             const response = await apiClient.get('/api/indicators/leading', {
                 params: { period }
@@ -101,7 +116,6 @@ export const api = {
         }
     },
 
-    // AI 분석 함수 추가
     generateAnalysis: async () => {
         try {
             const response = await apiClient.post('/api/analysis/generate');
@@ -110,13 +124,4 @@ export const api = {
             handleApiError(error, 'AI 분석을 생성하는데 실패했습니다.');
         }
     },
-
-    testGemini: async () => {
-        try {
-            const response = await apiClient.get('/api/analysis/test');
-            return response.data;
-        } catch (error) {
-            handleApiError(error, 'Gemini API 테스트 실패');
-        }
-    }
 };

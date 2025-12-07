@@ -125,9 +125,11 @@ function InflationChart() {
                 </div>
 
                 {/* 기간 선택 */}
-                <div className="flex gap-1 sm:gap-2">
-                    {['1y', '3y', '5y'].map((p) => (
+                <div className="flex gap-1 sm:gap-2 flex-wrap">
+                    {['1m', '3m', '6m', '1y', '3y', '5y'].map((p) => (
                         <button
+                            key={p}
+                            onClick={() => setPeriod(p)}
                             className={`px-2 sm:px-3 py-1 rounded text-xs sm:text-sm font-medium transition ${
                                 period === p
                                     ? 'bg-orange-600 text-white'
