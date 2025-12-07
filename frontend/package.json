@@ -1,7 +1,10 @@
 {
-  "name": "frontend",
+  "name": "us-economic-dashboard-frontend",
   "private": true,
-  "version": "0.0.0",
+  "description": "미국 경제 지표 대시보드 - 프론트엔드",
+  "author": "jsha2217",
+  "license": "MIT",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -32,3 +35,5 @@
     "vite": "^7.2.4"
   }
 }
+
+
