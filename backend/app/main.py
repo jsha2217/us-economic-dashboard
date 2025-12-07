@@ -5,6 +5,7 @@ API 서버의 진입점
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import get_settings
+from app.routes import indicators
 
 # 설정 로드
 settings = get_settings()
@@ -25,6 +26,9 @@ app.add_middleware(
     allow_methods=["*"],  # 모든 HTTP 메소드 허용
     allow_headers=["*"],  # 모든 헤더 허용
 )
+
+# 라우터 등록
+app.include_router(indicators.router)
 
 
 @app.get("/")
