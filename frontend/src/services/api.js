@@ -96,7 +96,7 @@ export const api = {
         }
     },
 
-    getLeading: async (period = '1y') => {
+    getLeadingIndicators: async (period = '1y') => {
         try {
             const response = await apiClient.get('/api/indicators/leading', {
                 params: { period }
